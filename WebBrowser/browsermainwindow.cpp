@@ -77,10 +77,9 @@ void BrowserMainWindow::AddTab()
 
 void BrowserMainWindow::CloseTab(int index)
 {
-    if(ui->tabWidget->count() == 1)
+    delete CurrentWebpage(index);
+    if(ui->tabWidget->count() == 0)
         this->close();
-    else
-        delete CurrentWebpage(index);
 }
 
 void BrowserMainWindow::on_toolButtonAddTab_clicked()
@@ -111,7 +110,7 @@ void BrowserMainWindow::LoadFinished(bool ok)
     if(ok)
         ChangeTitles();
     else
-        CurrentWebpage()->setHtml("Webpage Not Found: " + CurrentWebpage()->url().toString());
+        CurrentWebpage()->setHtml("Webpage Not Found: " + ui->lineEdit->text());
 }
 
 void BrowserMainWindow::ChangeTitles()
@@ -131,11 +130,14 @@ void BrowserMainWindow::ChangeTitles()
 
 void BrowserMainWindow::on_tabWidget_currentChanged(int index)
 {
-    ui->lineEdit->setText(CurrentWebpage(index)->url().toString());
-    if(index > -1)
-        this->setWindowTitle(CurrentWebpage(index)->title() + "  -  " + WINDOW_TITLE);
-    else
-        this->setWindowTitle(WINDOW_TITLE);
+    if(ui->tabWidget->count() > 0)
+    {
+        ui->lineEdit->setText(CurrentWebpage(index)->url().toString());
+        if(index > -1)
+            this->setWindowTitle(CurrentWebpage(index)->title() + "  -  " + WINDOW_TITLE);
+        else
+            this->setWindowTitle(WINDOW_TITLE);
+    }
 }
 
 void BrowserMainWindow::on_toolButtonBack_clicked()
@@ -152,3 +154,5 @@ void BrowserMainWindow::on_toolButtonHome_clicked()
 {
     CurrentWebpage()->load(home);
 }
+
+
